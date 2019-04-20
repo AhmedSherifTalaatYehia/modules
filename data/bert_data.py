@@ -261,10 +261,10 @@ def get_data(
         ))
         assert len(input_ids) == len(input_mask)
         assert len(input_ids) == len(input_type_ids)
-        if(len(orig_tokens)!=len(input_ids)):
-            print("not equal inputs_ids and orig_tokens")
+        #if(len(orig_tokens)!=len(input_ids)):
+            #print("not equal inputs_ids and orig_tokens")
 
-
+        '''
         if(len(input_ids)!=len(labels_ids)):
             if(len(input_ids)>len(labels_ids)):
                 removeElements=len(input_ids)-len(labels_ids)
@@ -281,7 +281,18 @@ def get_data(
                     array_input.append(indx)
             if(len(input_ids) != len(labels_ids)):
                 print("Invalid length")
-            
+        '''
+        if len(input_ids) != len(labels_ids):
+            if (len(input_ids) > len(labels_ids)):
+                removeElements = len(input_ids) - len(labels_ids)
+                for indx in range(removeElements):
+                    del input_ids[-1]
+            else:
+                removeElements = len(labels_ids) - len(input_ids)
+                for indx in range(removeElements):
+                    del labels_ids[-1]
+
+
         if len(input_ids) != len(labels_ids):
             print(len(input_ids), len(labels_ids),len(orig_tokens) ,orig_tokens)
             raise
