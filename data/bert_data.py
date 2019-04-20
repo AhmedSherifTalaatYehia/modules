@@ -269,7 +269,7 @@ def get_data(
 
             removeArray=[] 
             for inp in range(len(orig_tokens)):
-                if(len(orig_tokens[inp])==1 and 'u' in orig_tokens[inp]):
+                if(len(orig_tokens[inp])==1 and "\u200f" in orig_tokens[inp]):
                     removeArray.append(inp)
             for indx in removeArray:
                 del removeArray[indx]
