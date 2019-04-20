@@ -261,6 +261,21 @@ def get_data(
         ))
         assert len(input_ids) == len(input_mask)
         assert len(input_ids) == len(input_type_ids)
+        if(len(input_ids)!=len(labels_ids)):
+            if(len(input_ids)>len(labels_ids)):
+                removeElements=len(input_ids)-len(labels_ids)
+            else:
+                removeElements=len(labels_ids)-len(input_ids)
+
+            removeArray=[] 
+            for inp in input_ids:
+                if(len(inp)==1 and 'u' in inp):
+                    removeArray.append(inp)
+            for indx in removeArray:
+                input_ids.remove(indx)
+            if(len(input_ids) != len(labels_ids)):
+                print("Invalid length")
+            
         if len(input_ids) != len(labels_ids):
             print(len(input_ids), len(labels_ids), orig_tokens)
             raise
