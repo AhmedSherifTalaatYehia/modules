@@ -287,7 +287,9 @@ def get_data(
                 removeElements = len(input_ids) - len(labels_ids)
                 for indx in range(removeElements):
                     del input_ids[-1]
+                    del labels_mask[-1]
             else:
+                print("labels is greater")
                 removeElements = len(labels_ids) - len(input_ids)
                 for indx in range(removeElements):
                     del labels_ids[-1]
