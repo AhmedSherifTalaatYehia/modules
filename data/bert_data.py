@@ -282,17 +282,28 @@ def get_data(
             if(len(input_ids) != len(labels_ids)):
                 print("Invalid length")
         '''
+        labelFlag=False
         if len(input_ids) != len(labels_ids):
             if (len(input_ids) > len(labels_ids)):
                 removeElements = len(input_ids) - len(labels_ids)
                 for indx in range(removeElements):
                     del input_ids[-1]
-                    del labels_mask[-1]
+                    #del labels_mask[-1]
             else:
-                print("labels is greater")
                 removeElements = len(labels_ids) - len(input_ids)
                 for indx in range(removeElements):
                     del labels_ids[-1]
+                labelFlag=True
+        if(len(input_ids)!=len(labels_mask)):
+            if (len(input_ids) > len(labels_mask)):
+                removeElements = len(input_ids) - len(labels_mask)
+                for indx in range(removeElements):
+                    del input_ids[-1]
+                    #del labels_mask[-1]
+            else:
+                removeElements = len(labels_mask) - len(input_ids)
+                for indx in range(removeElements):
+                    del labels_mask[-1]
 
 
         if len(input_ids) != len(labels_ids):
