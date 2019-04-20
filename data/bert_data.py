@@ -268,11 +268,11 @@ def get_data(
                 removeElements=len(labels_ids)-len(input_ids)
 
             removeArray=[] 
-            for inp in input_ids:
+            for inp in range(len(orig_tokens)):
                 if(len(inp)==1 and 'u' in inp):
                     removeArray.append(inp)
             for indx in removeArray:
-                input_ids.remove(indx)
+                del removeArray[indx]
             if(len(input_ids) != len(labels_ids)):
                 print("Invalid length")
             
