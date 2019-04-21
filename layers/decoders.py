@@ -350,6 +350,17 @@ class NMTCRFDecoder(nn.Module):
         crf_score = self.crf.score(scores, input_mask, labels_ids)
         batch_size = encoder_outputs.shape[0]
         len_ = encoder_outputs.shape[1]
+        if (scores.shape[1] != labels_ids.shape[1]):
+            # print(labels_exp.shape, logits.shape, lens.shape)
+            if (scores.shape[1] > labels_ids.shape[1]):
+                scores = scores.resize_(scores.shape[0], labels_ids.shape[1],scores.shape[2])
+            else:
+                labels_ids = labels_ids.resize_(labels_ids.shape[0],scores.shape[1])
+            # print(labels_exp.shape, logits.shape, lens.shape)
+        if(scores.shape[1]!=labels_ids.shape[1]):
+            print("Invalid dec")
+        # if(batch_size!=len_):
+        #     print(scores.shape, labels_ids.shape)
         return self.loss(scores.view(batch_size * len_, -1), labels_ids.view(-1)) + crf_score
 
     @classmethod
