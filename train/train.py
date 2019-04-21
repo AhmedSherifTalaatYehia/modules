@@ -60,6 +60,15 @@ def transformed_result(preds, mask, id2label, target_all=None, pad_idx=0):
             
             for pred, bm in zip(batch_p, batch_m):
                 print(pred,bm)
+                if (pred.shape[0] != bm.shape[0]):
+                    # print(labels_exp.shape, logits.shape, lens.shape)
+                    if (pred.shape[0] > bm.shape[0]):
+                        pred = pred.resize_(bm.shape[0])
+                    else:
+                        bm = bm.resize_(pred.shape[0])
+                    # print(labels_exp.shape, logits.shape, lens.shape)
+                if (pred.shape[0] != bm.shape[0]):
+                    print("Invalid")
                 assert len(pred) == len(bm)
 
                 bm = bm.sum().cpu().data.tolist()
