@@ -85,8 +85,29 @@ class CRF(nn.Module):
 
     def calc_unary_score(self, logits, labels, lens):
         labels_exp = labels.unsqueeze(-1)
+        #print(labels_exp.shape,labels_exp.shape[0],labels_exp.shape[1],logits.shape)
+        if(labels_exp.shape[1]!=logits.shape[1]):
+            #print(labels_exp.shape,logits.shape,lens.shape)
+            if (labels_exp.shape[1] >logits.shape[1]):
+                labels_exp=labels_exp.resize_(labels_exp.shape[0],logits.shape[1],labels_exp.shape[2])
+            else:
+                logits=logits.resize_(logits.shape[0],labels_exp.shape[1],logits.shape[2])
+            #print(labels_exp.shape,logits.shape,lens.shape)
+        if(logits.shape[1]!=labels_exp.shape[1] or logits.shape[0]!=labels_exp.shape[0] ):
+            print("Invalid")
+
         scores = torch.gather(logits, 2, labels_exp).squeeze(-1)
         mask = sequence_mask(lens).float()
+        if (scores.shape[1] != mask.shape[1]):
+            #print(labels_exp.shape, logits.shape, lens.shape)
+            if (scores.shape[1] > mask.shape[1]):
+                scores = scores.resize_(scores.shape[0], mask.shape[1])
+            else:
+                mask = mask.resize_(mask.shape[0], scores.shape[1])
+            #print(labels_exp.shape, logits.shape, lens.shape)
+        if (mask.shape[1] != scores.shape[1] or mask.shape[0] != scores.shape[0]):
+            print("Invalid")
+        #print(scores.shape,mask.shape)
         scores = scores * mask
         return scores
 

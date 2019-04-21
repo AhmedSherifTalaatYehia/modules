@@ -241,6 +241,94 @@ def get_data(
             cls_idx = cls2idx[cls]
         if is_meta:
             meta = meta_tokens
+
+        assert len(input_ids) == len(input_mask)
+        assert len(input_ids) == len(input_type_ids)
+
+        # features.append(InputFeatures(
+        #     # Bert data
+        #     bert_tokens=bert_tokens,
+        #     input_ids=input_ids,
+        #     input_mask=input_mask,
+        #     input_type_ids=input_type_ids,
+        #     # Origin data
+        #     tokens=orig_tokens,
+        #     labels=labels,
+        #     labels_ids=labels_ids,
+        #     labels_mask=labels_mask,
+        #     tok_map=tok_map,
+        #     # Joint data
+        #     cls=cls,
+        #     cls_idx=cls_idx,
+        #     # Meta data
+        #     meta=meta
+        # ))
+
+        # if(len(bert_tokens)==len(input_ids)):
+        #     print("must be Equal")
+        #
+        # if (len(bert_tokens) == len(orig_tokens)):
+        #     print("must be Equal bert and origin")
+        # else:
+        #     print("must not be equal bert and origin")
+
+
+
+        #if(len(orig_tokens)!=len(input_ids)):
+            #print("not equal inputs_ids and orig_tokens")
+
+
+        if len(input_ids) != len(labels_ids):
+            #print("here")
+            if (len(input_ids) > len(labels_ids)):
+                removeElements = len(input_ids) - len(labels_ids)
+                for indx in range(removeElements):
+                    del input_ids[-1]
+                    del input_mask[-1]
+                    del input_type_ids[-1]
+                    del tok_map[-1]
+                    #del labels_mask[-1]
+            else:
+                removeElements = len(labels_ids) - len(input_ids)
+                for indx in range(removeElements):
+                    del labels_ids[-1]
+                    del labels_mask[-1]
+                    del tok_map[-1]
+        # if(len(labels_ids)!=len(labels_mask)):
+        #     if (len(input_ids) > len(labels_mask)):
+        #         removeElements = len(input_ids) - len(labels_mask)
+        #         for indx in range(removeElements):
+        #             del input_ids[-1]
+        #             #del labels_mask[-1]
+        #     else:
+        #         removeElements = len(labels_mask) - len(input_ids)
+        #         for indx in range(removeElements):
+        #             del labels_mask[-1]
+        #
+        # if (len(tok_map) != len(labels_ids)):
+        #
+        #     if (len(tok_map) > len(labels_ids)):
+        #         print("here")
+        #         removeElements = len(tok_map) - len(labels_ids)
+        #         for indx in range(removeElements):
+        #             del tok_map[-1]
+        #             # del labels_mask[-1]
+        #     #else:
+        #         #removeElements = len(labels_mask) - len(input_ids)
+        #         #for indx in range(removeElements):
+        #             #del labels_mask[-1]
+        #
+
+        if len(input_ids) != len(labels_ids):
+            print(len(input_ids), len(labels_ids),len(orig_tokens) ,orig_tokens)
+            raise
+        assert len(input_ids) == len(input_mask)
+        # assert len(input_ids) == len(input_type_ids)
+        # assert len(input_ids) == len(labels_mask)
+        # assert len(input_ids) == len(labels_ids)
+        # assert len(labels_mask) == len(labels_ids)
+        #assert len(tok_map) == len(labels_ids)
+
         features.append(InputFeatures(
             # Bert data
             bert_tokens=bert_tokens,
@@ -259,57 +347,6 @@ def get_data(
             # Meta data
             meta=meta
         ))
-        assert len(input_ids) == len(input_mask)
-        assert len(input_ids) == len(input_type_ids)
-        #if(len(orig_tokens)!=len(input_ids)):
-            #print("not equal inputs_ids and orig_tokens")
-
-        '''
-        if(len(input_ids)!=len(labels_ids)):
-            if(len(input_ids)>len(labels_ids)):
-                removeElements=len(input_ids)-len(labels_ids)
-            else:
-                removeElements=len(labels_ids)-len(input_ids)
-
-            removeArray=[] 
-            for inp in range(len(orig_tokens)):
-                if(len(orig_tokens[inp])==1 and "\u200f" in orig_tokens[inp]):
-                    removeArray.append(inp)
-            array_input=[]
-            for indx in range(len(input_ids)):
-                if(not (indx in removeArray)):
-                    array_input.append(indx)
-            if(len(input_ids) != len(labels_ids)):
-                print("Invalid length")
-        '''
-        labelFlag=False
-        if len(input_ids) != len(labels_ids):
-            if (len(input_ids) > len(labels_ids)):
-                removeElements = len(input_ids) - len(labels_ids)
-                for indx in range(removeElements):
-                    del input_ids[-1]
-                    #del labels_mask[-1]
-            else:
-                removeElements = len(labels_ids) - len(input_ids)
-                for indx in range(removeElements):
-                    del labels_ids[-1]
-                labelFlag=True
-        if(len(input_ids)!=len(labels_mask)):
-            if (len(input_ids) > len(labels_mask)):
-                removeElements = len(input_ids) - len(labels_mask)
-                for indx in range(removeElements):
-                    del input_ids[-1]
-                    #del labels_mask[-1]
-            else:
-                removeElements = len(labels_mask) - len(input_ids)
-                for indx in range(removeElements):
-                    del labels_mask[-1]
-
-
-        if len(input_ids) != len(labels_ids):
-            print(len(input_ids), len(labels_ids),len(orig_tokens) ,orig_tokens)
-            raise
-        assert len(input_ids) == len(labels_mask)
     if is_cls:
         
         return features, (label2idx, cls2idx)
