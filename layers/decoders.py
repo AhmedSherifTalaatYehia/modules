@@ -271,6 +271,17 @@ class NMTCRFDecoder(nn.Module):
         # B,T,D * B,D,1 --> B,1,T
         attn_energies = energies.bmm(hidden).transpose(1, 2)
         # PAD masking
+        #print(input_mask.shape,attn_energies.shape)
+        if (input_mask.shape[1] != attn_energies.shape[2]):
+            # print(labels_exp.shape, logits.shape, lens.shape)
+            if (input_mask.shape[1] > attn_energies.shape[2]):
+                input_mask = input_mask.resize_(input_mask.shape[0], attn_energies.shape[2])
+            else:
+                attn_energies = attn_energies.resize_(attn_energies.shape[0],attn_energies.shape[1] ,input_mask.shape[1])
+            # print(labels_exp.shape, logits.shape, lens.shape)
+        if (input_mask.shape[1] != attn_energies.shape[2] ):
+            print("Invalid")
+
         attn_energies = attn_energies.squeeze(1).masked_fill(input_mask, -1e12)
 
         # B,T
@@ -287,7 +298,12 @@ class NMTCRFDecoder(nn.Module):
 
         for idx, o in enumerate(encoder_outputs):
             real_length = input_mask[idx].sum().cpu().data.tolist()
-            real_context.append(o[real_length - 1])
+            if(real_length<len(o)):
+                real_context.append(o[real_length - 1])
+            else:
+                real_context.append(o[len(o) - 1])
+
+
         context = torch.cat(real_context).view(encoder_outputs.size(0), -1).unsqueeze(1)
 
         batch_size = encoder_outputs.size(0)
