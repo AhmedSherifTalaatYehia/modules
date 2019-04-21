@@ -59,7 +59,7 @@ def transformed_result(preds, mask, id2label, target_all=None, pad_idx=0):
         for batch_p, batch_m in zip(preds, mask):
             
             for pred, bm in zip(batch_p, batch_m):
-                print(pred,bm)
+                #print(pred,bm)
                 if (pred.shape[0] != bm.shape[0]):
                     # print(labels_exp.shape, logits.shape, lens.shape)
                     if (pred.shape[0] > bm.shape[0]):
