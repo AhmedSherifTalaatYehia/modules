@@ -59,7 +59,9 @@ def transformed_result(preds, mask, id2label, target_all=None, pad_idx=0):
         for batch_p, batch_m in zip(preds, mask):
             
             for pred, bm in zip(batch_p, batch_m):
+                print(pred,bm)
                 assert len(pred) == len(bm)
+
                 bm = bm.sum().cpu().data.tolist()
                 sent = pred[:bm].cpu().data.tolist()
                 preds_cpu.append([id2label[w] for w in sent])
