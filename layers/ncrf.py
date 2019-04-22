@@ -250,6 +250,14 @@ class NCRF(nn.Module):
         tg_energy = torch.gather(scores.view(seq_len, batch_size, -1), 2, new_tags).view(seq_len, batch_size)  # seq_len * bat_size
         ## mask transpose to (seq_len, batch_size)
         mask = mask.byte()
+        if(mask.shape[0]!=tg_energy.shape[0]):
+            if(mask.shape[0]>tg_energy.shape[0]):
+                mask=mask.resize_(tg_energy.shape[0])
+            else:
+                tg_energy=tg_energy.resize_(mask.shape[0])
+        if(mask.shape[0]!=tg_energy.shape[0]):
+            print("Invalid in NCRF")
+
         tg_energy = tg_energy.masked_select(mask.transpose(1,0))
 
         # ## calculate the score from START_TAG to first label
