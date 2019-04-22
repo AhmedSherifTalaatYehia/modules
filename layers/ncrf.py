@@ -259,7 +259,7 @@ class NCRF(nn.Module):
 
             else:
 
-                removeElements = tg_energy.shape[0] - tg_energy.shape[0]
+                removeElements = tg_energy.shape[0] - mask.shape[0]
                 for itn in range(removeElements):
                     tg_energy = tg_energy[0:tg_energy.shape[0] - 1]
 
