@@ -250,11 +250,25 @@ class NCRF(nn.Module):
         tg_energy = torch.gather(scores.view(seq_len, batch_size, -1), 2, new_tags).view(seq_len, batch_size)  # seq_len * bat_size
         ## mask transpose to (seq_len, batch_size)
         mask = mask.byte()
-        if(mask.shape[0]!=tg_energy.shape[0]):
-            if(mask.shape[0]>tg_energy.shape[0]):
-                mask=mask.resize_(tg_energy.shape[0])
+        if (mask.shape[0] != tg_energy.shape[0]):
+            if (mask.shape[0] > tg_energy.shape[0]):
+
+                removeElements=mask.shape[0]-tg_energy.shape[0]
+                for itn in range(removeElements):
+                    mask=mask[ 0:mask.shape[0] -1 ]
+
             else:
-                tg_energy=tg_energy.resize_(mask.shape[0])
+
+                removeElements = tg_energy.shape[0] - tg_energy.shape[0]
+                for itn in range(removeElements):
+                    tg_energy = tg_energy[0:tg_energy.shape[0] - 1]
+
+
+        # if(mask.shape[0]!=tg_energy.shape[0]):
+        #     if(mask.shape[0]>tg_energy.shape[0]):
+        #         mask=mask.resize_(tg_energy.shape[0])
+        #     else:
+        #         tg_energy=tg_energy.resize_(mask.shape[0])
         if(mask.shape[0]!=tg_energy.shape[0]):
             print("Invalid in NCRF")
 
